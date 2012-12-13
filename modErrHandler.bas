@@ -74,9 +74,9 @@ On Error GoTo ErrHandler_Err
     If DCount("[Name]", "MSysObjects", "Type = 1 AND [Name] = 'tblErrorLog'") < 1 Then
         DoCmd.RunSQL _
             "CREATE TABLE tblErrorLog " & _
-            "(ErrorID AUTOINCREMENT PRIMARY KEY, ErrorNumber INTEGER, ErrorDescription LONGTEXT, " & _
-            "ProcedureName CHAR, ModuleName CHAR, ErrorTimeStamp DATETIME, User CHAR, " & _
-            "ComputerName CHAR);"
+            "(ErrorID AUTOINCREMENT PRIMARY KEY, ErrorNumber INTEGER, " & _
+            "ErrorDescription LONGTEXT, ProcedureName CHAR, ModuleName CHAR, " & _
+            "ErrorTimeStamp DATETIME, User CHAR, ComputerName CHAR);"
     End If
     
     'Log the Error
