@@ -1,6 +1,13 @@
-Attribute VB_Name = "modErrHandler"
+Attribute VB_Name = "modErrorHandler"
 Option Compare Database
 Option Explicit
+
+Public Const gstrcErr23101 As String = "Active X scrollbar object not yet bound to " & _
+    "a form or control.  Run BindScrollBar method first."
+
+Public Const gstrcErr25101 As String = "Invalid parameters.  You must pass one or " & _
+    "more ADO RecordRets into the ExportToExcel function."
+    
 
 Public Function ErrHandler( _
 ByVal pvlngErrNum As Long, _
@@ -21,7 +28,7 @@ On Error GoTo ErrHandler_Err
 '*                              User's Selection.  If this function Errors out, it will *
 '*                              not log the Error, but will prompt the user to Abort,   *
 '*                              Retry, or Ignore.                                       *
-'*  Last Update     :       2012/12/13                                                  *
+'*  Last Update     :       2013/01/18                                                  *
 '*                                                                                      *
 '*  Parameters/Variables:   Description:                                                *
 '*  ~~~~~~~~~~~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~               *
@@ -55,14 +62,19 @@ On Error GoTo ErrHandler_Err
 '*  End Select                                                                          *
 '****************************************************************************************
     
+    'Account for apostrophes in passed error desc. so the SQL can write to the table.
+    pvstrErrDesc = Replace(pvstrErrDesc, "'", "''")
+    
     'Create Error Message
-    If Not IsMissing(pvstrErrCustom) Then 'Optional Error Message parameter was passed
+    If Not pvstrErrCustom = Empty Then
+        'Optional Error Message parameter was passed
          strErrorMessage = _
             pvstrErrCustom & vbCrLf & vbCrLf & _
             "Error # : " & pvlngErrNum & vbCrLf & _
             "Error Description : " & pvstrErrDesc & vbCrLf & vbCrLf & _
             "Please make a selection:"
-    Else 'No Optional Error Message Passed.  Use default.
+    Else
+        'No Optional Error Message Passed.  Use default.
         strErrorMessage = _
             "Error # : " & pvlngErrNum & vbCrLf & _
             "Error Description : " & pvstrErrDesc & vbCrLf & vbCrLf & _
@@ -116,4 +128,3 @@ ErrHandler_Err:
     GoTo ErrHandler_Exit
 
 End Function
-
